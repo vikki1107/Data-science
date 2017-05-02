@@ -3,6 +3,7 @@ title: "Titanic"
 author: "Chinki"
 date: "April 10, 2017"
 output:
+  pdf_document: default
   html_document: default
   word_document: default
 ---
