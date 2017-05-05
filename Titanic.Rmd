@@ -3,27 +3,30 @@ title: "Titanic"
 author: "Chinki"
 date: "April 10, 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   word_document: default
+Contributors: Vivek
 ---
-Titanic Machine learning from Disaster.
 
-Data Collection:
-source-https://www.kaggle.com/c/titanic/data
-Data has two group training and test.
-Data description 
-Variable	Definition	Key
-survival	Survival	0 = No, 1 = Yes
-pclass	Ticket class	1 = 1st, 2 = 2nd, 3 = 3rd
-sex	Sex	
-Age	Age in years	
-sibsp	# of siblings / spouses aboard the Titanic	
-parch	# of parents / children aboard the Titanic	
-ticket	Ticket number	
-fare	Passenger fare	
-cabin	Cabin number	
-embarked	Port of Embarkation	C = Cherbourg, Q = Queenstown, S = Southampton
+###Titanic Machine learning from Disaster.
+
+Data Collection:  
+source-https://www.kaggle.com/c/titanic/data  
+Data has two group training and test.  
+Data description  
+Variable	Definition	Key  
+survival	Survival	0 = No, 1 = Yes  
+pclass	Ticket class	1 = 1st, 2 = 2nd, 3 = 3rd  
+sex	Sex	 
+Age	Age in years	 
+sibsp	# of siblings / spouses aboard the Titanic	 
+parch	# of parents / children aboard the Titanic	 
+ticket	Ticket number	 
+fare	Passenger fare	 
+cabin	Cabin number	 
+embarked	Port of Embarkation	C = Cherbourg, Q = Queenstown, S = Southampton  
+
 ```{r getwd, echo=FALSE}
 wd <- getwd()
 ```
@@ -35,75 +38,58 @@ Titanic_test=read.csv(file.path(wd, "test.csv"))
 ```
 
 Data exploring and preparing 
-```{r}
+```{r Explore}
 #No of male and Females in titanic training data 
 table(Titanic_traning$Sex,Titanic_traning$Survived,Titanic_traning$Pclass)
-```
 
-```{r}
 # No of male and females in test data set
 table(Titanic_test$Sex,Titanic_test$Pclass)
-```
-
-```{r}
 
 Titanic_traning$Sex=factor(Titanic_traning$Sex)
 barplot(prop.table(table(Titanic_traning$Sex)),col = "blue")
-```
-```{r}
+
 # examine the structure of dataset
 str(Titanic_traning)
-```
-```{r}
-Titanic_traning$Survived=factor(Titanic_traning$Survived,levels = c("0","1"),labels = c("survived","notsurvived"))
-```
 
-```{r}
+Titanic_traning$Survived=factor(Titanic_traning$Survived,levels = c("0","1"),labels = c("survived","notsurvived"))
+
 #checking for missing values 
 sapply(Titanic_traning,function(x) sum(is.na(x)))
-```
 
-```{r}
 #Find out unique values from data set
 sapply(Titanic_traning,function(x) length(unique(x)))
-```
-```{r}
+
 # Dummy variable
 contrasts(Titanic_traning$Sex)
-```
-```{r}
+
 #Dummy variable 
 contrasts(Titanic_traning$Embarked)
-```
-```{r}
+
 #Checking for missing value
 table(is.na(Titanic_traning$Embarked))
-```
-```{r}
+
 #Checking for missing value of age 
 table(is.na(Titanic_traning$Age))
 
-```
-```{r}
 #In tarining data set 177 missing values
 Titanic_traning$Age[is.na(Titanic_traning$Age)]=mean(Titanic_traning$Age,na.rm = T)
-```
-Now we are ready to run Algorithum 
-We will delete unnessecary data columns from data set.
-```{r}
+
+# Now we are ready to run Algorithum 
+# We will delete unnessecary data columns from data set.
+
 Titanic_traning=Titanic_traning[c(2,3,5,6,7,8,10,12)]
 ```
 
-```{r}
-#Logistic Regression model
+```{r Model}
+# Logistic Regression model
 result=glm(Survived~.,family = binomial(link = "logit"),data = Titanic_traning,control = list(maxit = 1500))
 summary(result)
 ```
-```{r}
+
+```{r validation}
 anova(result,test = "Chisq")
 ```
 
-```{r}
+```{r predict}
 predict=predict(result,newdata = subset(Titanic_test,select=c(2,4,5,6,7,8,9,10,11)))
 ```
-
